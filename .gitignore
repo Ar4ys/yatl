@@ -16,3 +16,5 @@ build
 .yarn-integrity
 pnpm-lock.yaml
 *.sublime-workspace
+
+*.sqlite

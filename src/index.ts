@@ -4,6 +4,7 @@ import { fileURLToPath } from 'url'
 
 import indexRouter from './routes/index.js'
 import usersRouter from './routes/users.js'
+import './database.js'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const app = express()
