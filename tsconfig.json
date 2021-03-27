@@ -24,7 +24,7 @@
     "allowSyntheticDefaultImports": true,
     "moduleResolution": "node",
     "esModuleInterop": true,
-    "baseUrl": "./src",
+    // "baseUrl": "./src",
 
     /* Experimental Options */
     "experimentalDecorators": true,
