@@ -1,0 +1,37 @@
+{
+  "include": ["src/"],
+  "exclude": ["node_modules", "**/*.spec.ts"],
+
+  "compilerOptions": {
+
+    /* Basic Options */
+    "incremental": true,
+    "target": "ES2020",
+    "module": "ESNext",
+    "outDir": "./build",
+    "rootDir": "./src",
+    "lib": ["ES2020"],
+    "removeComments": true,
+    // "sourceMap": true,
+    "importHelpers": true,
+    "allowJs": true,
+    "tsBuildInfoFile": "build/.tsbuildinfo",
+
+    /* Strict Type-Checking Options */
+    "strict": true,
+
+    /* Module Resolution Options */
+    "allowSyntheticDefaultImports": true,
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "baseUrl": "./src",
+
+    /* Experimental Options */
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+
+    /* Advanced Options */
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
+  }
+}
