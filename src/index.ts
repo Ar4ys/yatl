@@ -4,7 +4,10 @@ import { fileURLToPath } from 'url'
 
 import indexRouter from './routes/index.js'
 import usersRouter from './routes/users.js'
-import './database.js'
+import sequelize from './models/index.js'
+
+// Use sequelize.sync instead of migrations for simplicity
+await sequelize.sync({ alter: true })
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const app = express()
