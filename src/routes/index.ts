@@ -1,9 +1,12 @@
 import { Router } from 'express'
+import TaskRouter from './task.js'
+
 const router = Router()
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' })
+router.get('/', (_req, res) => {
+  res.render('index')
 })
+
+router.use(TaskRouter)
 
 export default router

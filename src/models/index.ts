@@ -10,13 +10,16 @@ export type ModelFactory<M extends Model> =
   (sequelize: Sequelize) => ModelStatic<M>
 
 // Use sqlite instead of real database for simplicity
-const sequelize = new Sequelize("sqlite:db.sqlite")
+const sequelize = new Sequelize("sqlite:db.sqlite", {
+  logging: false
+})
+
 export const Models = {
   Task: TaskFactory(sequelize),
 }
 
 for (const model of Object.values(Models))
-  model.associate(Models)
+  model.associate?.(Models)
 
 export default sequelize
 export const {
