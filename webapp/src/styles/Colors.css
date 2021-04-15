@@ -1,0 +1,35 @@
+.default { background: white; }
+.dark-theme .default { background: #202124; }
+
+.red { background: #f28b82; }
+.dark-theme .red { background: #5c2b29; }
+
+.orange { background: #fbbc04; }
+.dark-theme .orange { background: #614a19; }
+
+.yellow { background: #fff475; }
+.dark-theme .yellow { background: #635d19; }
+
+.green { background: #ccff90; }
+.dark-theme .green { background: #345920; }
+
+.blue-green { background: #a7ffeb; }
+.dark-theme .blue-green { background: #16504b; }
+
+.blue { background: #cdf0f8; }
+.dark-theme .blue { background: #2b555e; }
+
+.dark-blue { background: #aecdfa; }
+.dark-theme .dark-blue { background: #1e3a5f; }
+
+.purple { background: #d7aefb; }
+.dark-theme .purple { background: #42275e; }
+
+.pink { background: #fdcfe8; }
+.dark-theme .pink { background: #5b2245; }
+
+.brown { background: #e6c9a8; }
+.dark-theme .brown { background: #442f19; }
+
+.grey { background: #3c3f43a6; }
+.dark-theme .grey { background: #3c3f43; }

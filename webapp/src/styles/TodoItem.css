@@ -1,0 +1,22 @@
+.todo-form {
+	position: sticky;
+	top: 10px;
+	z-index: 1;
+}
+
+div.item > p,
+input[type="text"] {
+	flex-grow: 2;
+	border: none;
+	background: none;
+	color: inherit;
+}
+
+div.item > button {
+	position: relative;
+	border: none;
+	background: none;
+	padding: 0;
+	margin: 10px;
+	color: inherit;
+}

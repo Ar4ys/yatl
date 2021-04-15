@@ -1,0 +1,7 @@
+.done {
+  opacity: .5;
+}
+
+.done > p {
+  text-decoration: line-through;
+}

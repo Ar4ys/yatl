@@ -1,0 +1,21 @@
+.checkbox {
+	position: relative;
+	margin: 10px;
+	opacity: .5;
+}
+
+.checkbox:hover {
+	opacity: 1;
+	cursor: pointer;
+}
+
+.checkbox:focus,
+.checkbox:active,
+.checkbox::-moz-focus-inner {
+	outline-color: rgba(0, 0, 0, 0);
+	border: none;
+}
+
+.checkbox:active {
+	opacity: .5;
+}
