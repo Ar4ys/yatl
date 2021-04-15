@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import catchAsync from 'express-async-handler'
+import catchAsync from '../utils/asyncErrorHandler.js'
 import TaskService from '../services/task.js'
 
 const router = Router()
