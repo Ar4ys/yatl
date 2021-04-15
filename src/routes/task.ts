@@ -42,7 +42,7 @@ router.route('/task/:id')
       if (amount === 0)
         res.sendStatus(404)
       else
-        res.sendStatus(204)
+        res.status(200).send(await TaskService.get(id))
     }))
   .delete(catchAsync(async (req, res) => {
     const id = +req.params.id
