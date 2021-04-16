@@ -1,6 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit"
 import reducer, { RootState } from "./slices"
-import { createLocalStorageUpdater } from "./localStorage";
+import { saveStore } from "./localStorage";
 import { getAllTodos } from "./thunks/todos";
 import 'react-redux';
 
@@ -13,7 +13,7 @@ declare module 'react-redux' {
   interface DefaultRootState extends RootState {}
 } 
 
-store.subscribe(createLocalStorageUpdater('darkTheme', store))
+store.subscribe(() => saveStore(store))
 store.dispatch(getAllTodos())
 
 export default store

@@ -1,24 +1,28 @@
 import { $CombinedState } from '@reduxjs/toolkit'
 import Store, { RootState } from './index'
+
 export const getFromLocalStorage = (key: string) => {
-  const value = localStorage.getItem(key)
-  return value && JSON.parse(value)
+  try {
+    const value = localStorage.getItem(key)
+    return value && JSON.parse(value)
+  } catch (e) {
+    console.error(`Cannot get '${key}' from localStorage. ${e}`)
+    return undefined
+  }
 }
 
-type storeKeys = keyof Omit<RootState, typeof $CombinedState>
+type storeSlices = keyof Omit<RootState, typeof $CombinedState>
 
-type localStorageUpdater = 
-  (
-    key: storeKeys,
-    store: typeof Store,
-    initialState?: RootState[typeof key]
-  ) => () => void
-
-export const createLocalStorageUpdater: localStorageUpdater = 
-  (key, store, initialState = store.getState()[key]) => 
-    () => {
-      const value = store.getState()[key]
-      if (value === initialState) return
-      localStorage.setItem(key, JSON.stringify(value))
-      initialState = value
-    }
+export const saveStore = (store: typeof Store, slices?: storeSlices[]) => {
+  const state = store.getState()
+  ;(slices ?? Object.keys(state) as storeSlices[])
+    .forEach((slice) => {
+      try {
+        localStorage.setItem(
+          slice,
+          JSON.stringify(state[slice]))
+      } catch (e) {
+        console.error(`Cannot save '${slice}'' to localStorage. ${e}`)
+      }
+    })
+}

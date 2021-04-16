@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit"
 import * as Thunk from '../thunks/todos'
 import type { Color } from "../../enums"
+import { getFromLocalStorage } from "../localStorage"
 
 export interface Todo {
   id: number
@@ -18,7 +19,7 @@ export interface TodoCreate extends Pick<Todo, 'content' | 'color'> {}
 
 const todosSlice = createSlice({
   name: "todos",
-  initialState: [] as Todo[],
+  initialState: (getFromLocalStorage('todos') ?? []) as Todo[],
   reducers: {},
   extraReducers: builder => builder
     .addCase(Thunk.getAllTodos.fulfilled, (_todos, { payload }) =>
