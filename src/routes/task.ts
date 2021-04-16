@@ -19,8 +19,8 @@ router.route('/task')
     validate(taskCreationBodyValidator()),
     catchAsync(async (req, res) => {
       const taskFields = req.body
-      const taskId = await TaskService.create(taskFields)
-      res.status(201).send({ id: taskId })
+      const task = await TaskService.create(taskFields)
+      res.status(201).send(task)
     }))
 
 router.route('/task/:id')
