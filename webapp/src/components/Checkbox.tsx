@@ -1,12 +1,18 @@
-import { useState } from "react"
+import { ChangeEventHandler, useState, VFC } from "react"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faCircle, faCheckCircle } from "@fortawesome/free-regular-svg-icons"
 import "../styles/Checkbox.css"
 
-export function Checkbox({ name, checked, onChange }) {
+export interface CheckboxProps {
+  name?: string
+  checked?: boolean
+  onChange?: ChangeEventHandler<HTMLInputElement>
+}
+
+export const Checkbox: VFC<CheckboxProps> = ({ name, checked, onChange }) => {
   const [ isChecked, setChecked ] = useState(checked)
 
-  const toggle = event => {
+  const toggle: ChangeEventHandler<HTMLInputElement> = event => {
     const { checked } = event.target
     setChecked(checked)
     onChange?.(event)

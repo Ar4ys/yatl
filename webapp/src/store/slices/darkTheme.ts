@@ -1,10 +1,11 @@
-import { createSlice } from "../../utils"
+import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 
 const darkThemeSlice = createSlice({
   name: "darkTheme",
   initialState: false,
   reducers: {
-    toggleDarkTheme: (state, darkTheme) => darkTheme ?? !state
+    toggleDarkTheme: (state: boolean, { payload }: PayloadAction<boolean>) =>
+      payload ?? !state
   }
 })
 

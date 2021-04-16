@@ -1,11 +1,19 @@
-import "../styles/IconButton.css"
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import type { DetailedHTMLProps, HTMLAttributes, VFC } from "react"
+import { FontAwesomeIcon, FontAwesomeIconProps } from '@fortawesome/react-fontawesome'
 import * as solid from '@fortawesome/free-solid-svg-icons'
+import "../styles/IconButton.css"
 
-export const Icon = props => {
+type HTMLButtonProps =
+  DetailedHTMLProps<HTMLAttributes<HTMLButtonElement>, HTMLButtonElement>
+
+export type FontAwesomeIconProp = FontAwesomeIconProps['icon']
+
+export interface IconProps extends HTMLButtonProps {
+  icon: FontAwesomeIconProp
+}
+
+export const Icon: VFC<IconProps> = props => {
   const { icon, className } = props
-  props = {...props}
-  delete props.icon
 
   return <>
     <button {...props} className={"icon-button " + (className ?? "")}>
@@ -14,7 +22,10 @@ export const Icon = props => {
   </>
 }
 
-const createIconButton = icon => props =>
+type IconButtonFabric =
+  (icon: FontAwesomeIconProp) => VFC<Omit<IconProps, 'icon'>>
+
+const createIconButton: IconButtonFabric = icon => props =>
   <Icon {...props} icon={icon}/>
 
 export const Accept = createIconButton(solid.faCheck)

@@ -1,11 +1,22 @@
-import { useState } from "react"
+import { KeyboardEventHandler, useState, VFC } from "react"
 import { Item } from "./Item"
 import * as Button from "./IconButtons"
 import { ColorPicker } from "./ColorPicker"
-import { allColors } from "../utils"
+import { Color } from "../enums"
+import { Todo } from "../store/slices/todos"
 
-export function TodoItemEdit(props) {
-  const [ text, setText ] = useState(props.text)
+type TodoUpdate = Pick<Todo, 'content' | 'color'>
+type InputKeyboardEventHandler = KeyboardEventHandler<HTMLInputElement>
+
+export interface TodoItemEditProps {
+  content: string
+  color: Color
+  onAccept: (payload: TodoUpdate) => void
+  onCancel: () => void
+}
+
+export const TodoItemEdit: VFC<TodoItemEditProps> = props => {
+  const [ content, setContent ] = useState(props.content)
   const [ color, setColor ] = useState(props.color)
   const [
     isColorPickerOpened,
@@ -13,9 +24,9 @@ export function TodoItemEdit(props) {
   ] = useState(false)
 
   const updateTodo = () =>
-    props.onAccept({ text, color })
+    props.onAccept({ content, color })
 
-  const onKeyPress = ({ key }) => {
+  const onKeyPress: InputKeyboardEventHandler = ({ key }) => {
     switch(key) {
       case "Escape":
         props.onCancel()
@@ -32,8 +43,6 @@ export function TodoItemEdit(props) {
       <Button.ColorPicker onClick={() => setColorPickerState(true)} />
       {isColorPickerOpened
         ? <ColorPicker
-            colors={allColors}
-            color={color}
             onSelect={setColor}
             onBlur={() => setColorPickerState(false)}
             blurOnSelect
@@ -41,8 +50,8 @@ export function TodoItemEdit(props) {
         : undefined}
       <input
         type="text"
-        value={text}
-        onChange={({ target }) => setText(target.value)}
+        value={content}
+        onChange={({ target }) => setContent(target.value)}
         onKeyDown={onKeyPress}
         placeholder="Type some todo..."
         autoFocus

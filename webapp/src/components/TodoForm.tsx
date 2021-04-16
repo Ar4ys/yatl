@@ -1,16 +1,18 @@
-import { useState } from "react"
+import { KeyboardEventHandler, useState, VFC } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { addTodo as addTodoAction } from "../store/ducks/todos"
-import { toggleDarkTheme } from "../store/ducks/darkTheme"
+import { createTodo } from "../store/slices/todos"
+import { toggleDarkTheme } from "../store/slices/darkTheme"
 import { Item } from "./Item"
 import * as Button from "./IconButtons"
 import { ColorPicker } from "./ColorPicker"
-import { allColors } from "../utils"
+import { Color } from "../enums"
 import "../styles/TodoItem.css"
 
-export function TodoForm() {
-  const [ text, setText ] = useState("")
-  const [ color, setColor ] = useState("default")
+type InputKeyboardHandler = KeyboardEventHandler<HTMLInputElement>
+
+export const TodoForm: VFC = () => {
+  const [ content, setContent ] = useState("")
+  const [ color, setColor ] = useState(Color.Defualt)
   const [
     isColorPickerOpened,
     setColorPickerState
@@ -19,12 +21,12 @@ export function TodoForm() {
   const dispatch = useDispatch()
 
   const addTodo = () => {
-    dispatch(addTodoAction({ text, color }))
-    setText("")
-    setColor("default")
+    dispatch(createTodo({ content, color }))
+    setContent("")
+    setColor(Color.Defualt)
   }
 
-  const onKeyPress = ({ key }) =>
+  const onKeyPress: InputKeyboardHandler = ({ key }) =>
     key === "Enter" && addTodo()
 
   return <>
@@ -32,7 +34,6 @@ export function TodoForm() {
       <Button.ColorPicker onClick={() => setColorPickerState(true)} />
       {isColorPickerOpened
         ? <ColorPicker
-            colors={allColors}
             color={color}
             onSelect={setColor}
             onBlur={() => setColorPickerState(false)}
@@ -41,8 +42,8 @@ export function TodoForm() {
         : undefined}
       <input
         type="text"
-        value={text}
-        onChange={({ target }) => setText(target.value)}
+        value={content}
+        onChange={({ target }) => setContent(target.value)}
         onKeyDown={onKeyPress}
         placeholder="Type some todo..."
       />
