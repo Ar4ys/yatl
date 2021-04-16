@@ -1,8 +1,9 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
+import { getFromLocalStorage } from '../localStorage'
 
 const darkThemeSlice = createSlice({
   name: "darkTheme",
-  initialState: false,
+  initialState: getFromLocalStorage('darkTheme') as boolean ?? false,
   reducers: {
     toggleDarkTheme: (state: boolean, { payload }: PayloadAction<boolean>) =>
       payload ?? !state
