@@ -8,7 +8,7 @@ export function taskIdParamValidator() {
 
 export function taskCreationBodyValidator() {
   return [
-    body('content').trim().isString().notEmpty(),
+    body('content').trim().isString(),
     body('color').trim().isString().notEmpty(),
     body('done').isBoolean().optional()
   ]
