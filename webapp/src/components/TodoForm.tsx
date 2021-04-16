@@ -1,6 +1,6 @@
 import { KeyboardEventHandler, useState, VFC } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { createTodo } from "../store/slices/todos"
+import { createTodo } from "../store/thunks/todos"
 import { toggleDarkTheme } from "../store/slices/darkTheme"
 import { Item } from "./Item"
 import * as Button from "./IconButtons"

@@ -12,6 +12,7 @@
     "@types/node": "^12.20.8",
     "@types/react": "^17.0.3",
     "@types/react-dom": "^17.0.3",
+    "ky": "^0.27.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-redux": "^7.2.3",
@@ -31,6 +32,7 @@
       "react-app/jest"
     ]
   },
+  "proxy": "http://localhost:4000",
   "browserslist": {
     "production": [
       ">0.2%",

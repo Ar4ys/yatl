@@ -1,6 +1,7 @@
 import { useState, VFC } from "react"
 import { useDispatch } from "react-redux"
-import { updateTodo as updateTodoAction, deleteTodo, Todo } from "../store/slices/todos"
+import type { Todo } from "../store/slices/todos"
+import { updateTodo as updateTodoAction, deleteTodo } from "../store/thunks/todos"
 import { TodoItemView } from "./TodoItemView"
 import { TodoItemEdit } from "./TodoItemEdit"
 import { Color } from "../enums"
@@ -17,7 +18,7 @@ export const TodoItem: VFC<TodoItemProps> = ({ id, content, color, done, editing
   const [ isEditing, setEditing ] = useState(editing ?? false)
   const dispatch = useDispatch()
   const updateTodo = (todo: Partial<Todo>) => {
-    dispatch(updateTodoAction({ id, ...todo }))
+    dispatch(updateTodoAction({ id, todo }))
     setEditing(false)
   }
   
