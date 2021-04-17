@@ -7,18 +7,18 @@ import { TodoItemEdit } from "./TodoItemEdit"
 import { Color } from "../enums"
 
 export interface TodoItemProps {
-  id: number
+  uuid: string
   content: string
   color: Color
   done: boolean
   editing?: boolean
 }
 
-export const TodoItem: VFC<TodoItemProps> = ({ id, content, color, done, editing }) => {
+export const TodoItem: VFC<TodoItemProps> = ({ uuid, content, color, done, editing }) => {
   const [ isEditing, setEditing ] = useState(editing ?? false)
   const dispatch = useDispatch()
   const updateTodo = (todo: Partial<Todo>) => {
-    dispatch(updateTodoAction({ id, todo }))
+    dispatch(updateTodoAction({ uuid, todo }))
     setEditing(false)
   }
   
@@ -30,7 +30,7 @@ export const TodoItem: VFC<TodoItemProps> = ({ id, content, color, done, editing
       /> 
     : <TodoItemView
         onEdit={() => setEditing(true)}
-        onDelete={() => dispatch(deleteTodo(id))}
+        onDelete={() => dispatch(deleteTodo(uuid))}
         onDone={state => updateTodo({ done: state })}
         {...{ content, color, done }}
       />

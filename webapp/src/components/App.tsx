@@ -10,7 +10,7 @@ export function App() {
   return <>
     <main className={className}>
       <TodoForm />
-      {todos.map(todo => <TodoItem key={todo.id} {...todo}/>)}
+      {todos.map(todo => <TodoItem key={todo.uuid} {...todo}/>)}
     </main>
   </>
 }

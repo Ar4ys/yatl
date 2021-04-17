@@ -2,76 +2,65 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import * as Thunk from '../thunks/todos'
 import type { Color } from "../../enums"
 import { getFromLocalStorage } from "../localStorage"
+import { v4 as makeUUID } from 'uuid'
 
 export interface Todo {
-  id: number
+  uuid: string
   content: string
   color: Color
   done: boolean
   updatedAt: string
-  localOnly: boolean | string
 }
 
 export interface TodoUpdate {
-  id: number
+  uuid: string
   todo: Partial<Todo>
 }
 
 export interface TodoCreate extends Pick<Todo, 'content' | 'color'> {}
 
+export type TodoDelete = string
+
 const todosSlice = createSlice({
   name: "todos",
   initialState: (getFromLocalStorage('todos') ?? []) as Todo[],
   reducers: {
-    batchAddTodo: (_todos, { payload }: PayloadAction<Todo[]>) =>
+    batchAddTodo: (_, { payload }: PayloadAction<Todo[]>) =>
       payload,
-
-    // createTodo: (todos, { payload }: PayloadAction<TodoCreate>) =>
-    //   void todos.push({
-    //     // Temporary id. Actual id is generated on backend
-    //     id: todos.length ? todos[todos.length-1].id+1 : 1,
-    //     done: false,
-    //     updatedAt: new Date().toJSON(),
-    //     localOnly: true,
-    //     ...payload
-    //   }),
 
     addTodo: (todos, { payload }: PayloadAction<Todo>) => 
       void todos.push(payload),
 
     updateTodo: (todos, { payload }: PayloadAction<TodoUpdate>) =>
-      void Object.assign(findTodo(todos, payload.id) ?? {}, payload.todo),
+      void Object.assign(findTodo(todos, payload.uuid) ?? {}, payload.todo),
 
-    deleteTodo: (todos, { payload: id }: PayloadAction<number>) => 
-      todos.filter(todo => todo.id !== id)
+    deleteTodo: (todos, { payload: uuid }: PayloadAction<TodoDelete>) => 
+      todos.filter(todo => todo.uuid !== uuid)
   },
   extraReducers: builder => builder
     .addCase(Thunk.createTodo.pending, (todos, { meta }) => 
       void todos.push({
-        // Temporary id. Actual id is generated on backend
-        id: todos.length ? todos[todos.length-1].id+1 : 1,
+        uuid: makeUUID(),
         done: false,
         updatedAt: new Date().toJSON(),
-        localOnly: meta.requestId,
         ...meta.arg
       }))
 
-    .addCase(Thunk.createTodo.fulfilled, (todos, { payload, meta }) =>
+    .addCase(Thunk.createTodo.fulfilled, (todos, { payload }) =>
       void Object.assign(
-        todos.find(todo => todo.localOnly === meta.requestId) ?? {},
-        pick(payload, ['id', 'updatedAt']),
-        { localOnly: false }
+        findTodo(todos, payload.uuid) ?? {},
+        pick(payload, ['updatedAt']),
       ))
 
     .addCase(Thunk.updateTodo.fulfilled, (todos, { payload }) =>
       void Object.assign(
-        findTodo(todos, payload.id) ?? {},
+        findTodo(todos, payload.uuid) ?? {},
         pick(payload, ['updatedAt'])
       ))
 })
 
-function findTodo(todos: Todo[], id: number) {
-  return todos.find(todo => todo.id === id)
+function findTodo(todos: Todo[], uuid: string) {
+  return todos.find(todo => todo.uuid === uuid)
 }
 
 function pick<T extends Object>(obj: T, keys: (keyof T)[]) {
@@ -85,7 +74,6 @@ export default todosSlice.reducer
 export const {
   addTodo,
   batchAddTodo,
-  // createTodo,
   deleteTodo,
   updateTodo
 } = todosSlice.actions
