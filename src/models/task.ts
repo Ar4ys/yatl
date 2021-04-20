@@ -5,6 +5,7 @@ const { Model, DataTypes } = Sq
 
 export interface TaskAttributes {
   id: number
+  uuid: string
   content: string
   color: string
   done: boolean
@@ -16,6 +17,7 @@ export interface TaskCreationAttributes
 export class Task extends Model<TaskAttributes, TaskCreationAttributes>
   implements TaskAttributes {
   id!: number
+  uuid!: string
   content!: string
   color!: string
   done!: boolean
@@ -27,9 +29,14 @@ export class Task extends Model<TaskAttributes, TaskCreationAttributes>
 export const TaskFactory: ModelFactory<Task> = (sequelize) =>
   Task.init({
     id: {
-      type: DataTypes.INTEGER.UNSIGNED,
+      type: DataTypes.INTEGER,
       autoIncrement: true,
       primaryKey: true,
+    },
+    uuid: {
+      type: DataTypes.UUIDV4,
+      allowNull: false,
+      unique: true,
     },
     content: {
       type: DataTypes.STRING,

@@ -1,12 +1,18 @@
 import type { RequestHandler, NextFunction } from 'express'
+import type { ParamsDictionary, Query } from 'express-serve-static-core'
 import { RouteError } from './errors.js'
 
-type asyncRequestHandler = 
-  (...args: Parameters<RequestHandler>) => Promise<void> | void
-type errorHandlerFabric = (fn: asyncRequestHandler) => RequestHandler
+type AsyncRequestHandler<P, B, Q> = 
+  (...args: Parameters<RequestHandler<P, unknown, B, Q>>) => Promise<void> | void
 
-const asyncErrorHandler: errorHandlerFabric =
-  fn => async (...args) => {
+function asyncErrorHandler<
+  ReqBody = any,
+  Params extends string = string,
+  URLQuery extends Query = Query
+>(
+  fn: AsyncRequestHandler<Record<Params, string>, ReqBody, URLQuery>
+): RequestHandler<Record<Params, string>, unknown, ReqBody, URLQuery> {
+  return async (...args) => {
     const next = args[args.length-1] as NextFunction
     try {
       return await fn(...args)
@@ -14,5 +20,6 @@ const asyncErrorHandler: errorHandlerFabric =
       next(new RouteError(args[0], err))
     }
   }
+}
 
 export default asyncErrorHandler

@@ -1,8 +1,8 @@
 import { Task, TaskAttributes, TaskCreationAttributes } from '../models/task.js'
 
 class TaskService {
-  async get(id: number) {
-    return Task.findOne({ where: { id } })
+  async get(uuid: string) {
+    return Task.findOne({ where: { uuid } })
   }
 
   async getAll() {
@@ -10,15 +10,17 @@ class TaskService {
   }
 
   async create(attributes: TaskCreationAttributes) {
-    return Task.create(attributes)
+    const { color, content, uuid, done } = attributes
+    return Task.create({ color, content, uuid, done })
   }
 
-  async update(id: number, fields: Partial<TaskAttributes>) {
-    return Task.update(fields, { where: { id }})
+  async update(uuid: string, fields: Partial<TaskAttributes>) {
+    const { color, content, done } = fields
+    return Task.update({ color, content, done }, { where: { uuid }})
   }
 
-  async delete(id: number) {
-    return Task.destroy({ where: { id }})
+  async delete(uuid: string) {
+    return Task.destroy({ where: { uuid }})
   }
 }
 

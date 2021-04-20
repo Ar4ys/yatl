@@ -1,13 +1,16 @@
 import { Router } from 'express'
+import Sq from 'sequelize'
 import catchAsync from '../utils/asyncErrorHandler.js'
 import TaskService from '../services/task.js'
 import validate from '../utils/validate.js'
+import { Task, TaskCreationAttributes } from '../models/task.js'
 import {
-  taskIdParamValidator,
+  taskUUIDParamValidator,
   taskCreationBodyValidator,
   taskUpdateBodyValidator
 } from '../validation/task.js'
 
+const { UniqueConstraintError } = Sq
 const router = Router()
 
 router.route('/task')
@@ -17,17 +20,26 @@ router.route('/task')
   }))
   .post(
     validate(taskCreationBodyValidator()),
-    catchAsync(async (req, res) => {
-      const taskFields = req.body
-      const task = await TaskService.create(taskFields)
-      res.status(201).send(task)
+    catchAsync<TaskCreationAttributes>(async (req, res) => {
+      try {
+        const task = await TaskService.create(req.body)
+        res.status(201).send(task)
+      } catch (e) {
+        if (e instanceof UniqueConstraintError)
+          res.status(400).send({
+            msg: 'UUID must be unique',
+            param: 'uuid',
+            location: 'body'
+          })
+        else throw e
+      }
     }))
 
-router.route('/task/:id')
-  .all(validate(taskIdParamValidator()))
-  .get(catchAsync(async (req, res) => {
-    const id = +req.params.id
-    const task = await TaskService.get(id)
+router.route('/task/:uuid')
+  .all(validate(taskUUIDParamValidator()))
+  .get(catchAsync<void, "uuid">(async (req, res) => {
+    const { uuid } = req.params
+    const task = await TaskService.get(uuid)
     if (task)
       res.status(200).send(task)
     else
@@ -35,18 +47,18 @@ router.route('/task/:id')
   }))
   .patch(
     validate(taskUpdateBodyValidator()),
-    catchAsync(async (req, res) => {
-      const id = +req.params.id
+    catchAsync<Partial<Task>, "uuid">(async (req, res) => {
+      const { uuid } = req.params
       const fields = req.body
-      const [ amount ] = await TaskService.update(id, fields)
+      const [ amount ] = await TaskService.update(uuid, fields)
       if (amount === 0)
         res.sendStatus(404)
       else
-        res.status(200).send(await TaskService.get(id))
+        res.status(200).send(await TaskService.get(uuid))
     }))
-  .delete(catchAsync(async (req, res) => {
-    const id = +req.params.id
-    const amount = await TaskService.delete(id)
+  .delete(catchAsync<void, "uuid">(async (req, res) => {
+    const { uuid } = req.params
+    const amount = await TaskService.delete(uuid)
     if (amount === 0)
       res.sendStatus(404)
     else
