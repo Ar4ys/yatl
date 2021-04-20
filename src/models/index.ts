@@ -1,5 +1,6 @@
 import { Sequelize, Model, ModelCtor, BuildOptions } from 'sequelize'
 import { TaskFactory } from "./task.js"
+import { UserFactory } from "./User.js"
 
 export interface ModelStatic<M extends Model> extends ModelCtor<M> {
   new(values?: M['_creationAttributes'], options?: BuildOptions): M
@@ -16,6 +17,7 @@ const sequelize = new Sequelize("sqlite:db.sqlite", {
 
 export const Models = {
   Task: TaskFactory(sequelize),
+  User: UserFactory(sequelize),
 }
 
 for (const model of Object.values(Models))
@@ -24,4 +26,5 @@ for (const model of Object.values(Models))
 export default sequelize
 export const {
   Task,
+  User,
 } = Models
