@@ -1,3 +1,4 @@
+import 'dotenv/config'
 import express, { json, urlencoded } from 'express'
 import { dirname, join } from 'path'
 import { fileURLToPath } from 'url'
@@ -11,11 +12,8 @@ await sequelize.sync({ alter: true })
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const app = express()
 const port = process.env.PORT ?? 3000 
-const publicFolder = process.env.NODE_ENV === 'production'
-  ? join(__dirname, 'public')
-  : process.env.USE_WEBAPP === undefined
-    ? join(__dirname, 'public')
-    : join(__dirname, '../build/', 'public')
+// Resolves against .env file
+const publicFolder = join(__dirname, '..', process.env.PUBLIC ?? 'src/public')
 
 app.use(json())
 app.use(urlencoded({ extended: false }))
