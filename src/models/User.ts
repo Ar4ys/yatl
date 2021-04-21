@@ -4,13 +4,13 @@ import Sq, {
   Optional
 } from 'sequelize'
 import type { ModelFactory, Models, ModelStatic } from "./index.js"
-import type { Task } from './Task.js'
+import type { Task } from './task.js'
 
 const { Model, DataTypes } = Sq
 
 export interface UserAttributes {
   id: number
-  restoreToken: string
+  googleId: string
 }
 
 export interface UserCreationAttributes
@@ -19,7 +19,7 @@ export interface UserCreationAttributes
 export class User extends Model<UserAttributes, UserCreationAttributes>
   implements UserAttributes {
   id!: number
-  restoreToken!: string
+  googleId!: string
 
   readonly createdAt!: Date
   readonly updatedAt!: Date
@@ -41,7 +41,7 @@ export const UserFactory: ModelFactory<User> = (sequelize) =>
       autoIncrement: true,
       primaryKey: true,
     },
-    restoreToken: {
+    googleId: {
       type: DataTypes.STRING,
       allowNull: false,
       unique: true
