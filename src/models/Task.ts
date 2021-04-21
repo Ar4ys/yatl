@@ -1,5 +1,5 @@
 import Sq, { Optional } from 'sequelize'
-import type { ModelFactory, ModelStatic } from "./index.js"
+import type { ModelFactory, Models, ModelStatic } from "./index.js"
 
 const { Model, DataTypes } = Sq
 
@@ -24,6 +24,10 @@ export class Task extends Model<TaskAttributes, TaskCreationAttributes>
 
   readonly createdAt!: Date
   readonly updatedAt!: Date
+
+  static associate(models: typeof Models) {
+    Task.belongsTo(models.User)
+  }
 }
 
 export const TaskFactory: ModelFactory<Task> = (sequelize) =>

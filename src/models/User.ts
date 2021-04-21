@@ -4,7 +4,7 @@ import Sq, {
   Optional
 } from 'sequelize'
 import type { ModelFactory, Models, ModelStatic } from "./index.js"
-import type { Task } from './task.js'
+import type { Task } from './Task.js'
 
 const { Model, DataTypes } = Sq
 
