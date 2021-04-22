@@ -5,6 +5,10 @@ class UserService {
     return await User.findByPk(id)
   }
 
+  async getByGoogleId(googleId: string): Promise<User | null> {
+    return await User.findOne({ where: { googleId }})
+  }
+
   async getAll(): Promise<User[]> {
     return await User.findAll()
   }

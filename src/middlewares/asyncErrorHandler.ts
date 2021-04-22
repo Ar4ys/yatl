@@ -1,6 +1,6 @@
 import type { RequestHandler, NextFunction } from 'express'
-import type { ParamsDictionary, Query } from 'express-serve-static-core'
-import { RouteError } from './errors.js'
+import type { Query } from 'express-serve-static-core'
+import { RouteError } from '../utils/errors.js'
 
 type AsyncRequestHandler<P, B, Q> = 
   (...args: Parameters<RequestHandler<P, unknown, B, Q>>) => Promise<void> | void

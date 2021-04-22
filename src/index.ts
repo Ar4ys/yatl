@@ -1,4 +1,4 @@
-import 'dotenv/config'
+import 'dotenv/config.js'
 import express, { json, urlencoded } from 'express'
 import { dirname, join } from 'path'
 import { fileURLToPath } from 'url'
