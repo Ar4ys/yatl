@@ -5,7 +5,7 @@ const darkThemeSlice = createSlice({
   name: "darkTheme",
   initialState: getFromLocalStorage('darkTheme') as boolean ?? false,
   reducers: {
-    toggleDarkTheme: (state: boolean, { payload }: PayloadAction<boolean>) =>
+    toggleDarkTheme: (state: boolean, { payload }: PayloadAction<boolean | undefined>) =>
       payload ?? !state
   }
 })
