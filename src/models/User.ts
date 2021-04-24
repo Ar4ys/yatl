@@ -51,7 +51,7 @@ export const UserFactory: ModelFactory<User> = (sequelize) =>
     darkTheme: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
-      defaultValue: false
+      defaultValue: true
     }
   }, { sequelize }) as unknown as ModelStatic<User>
 // Need to do this convertion ^ because sequelize type is incorrect.
