@@ -1,13 +1,17 @@
 import { Router } from 'express'
 import validate from '../middlewares/validate.js'
 import asyncCatch from '../middlewares/asyncErrorHandler.js'
-import { googleTokenBodyValidator } from '../validation/user.js'
+import {
+  googleTokenBodyValidator,
+  userPreferencesBodyValidator
+} from '../validation/user.js'
 import UserService from '../services/User.js'
 import { GoogleTokenBody, parseGoogleToken } from '../middlewares/parseGoogleToken.js'
+import { authValidation } from '../middlewares/auth.js'
 
 const router = Router()
 
-router.post('/login',
+router.post('/user/login',
   validate(googleTokenBodyValidator()),
   parseGoogleToken(),
   asyncCatch<GoogleTokenBody>(async (req, res) => {
@@ -19,7 +23,7 @@ router.post('/login',
       res.sendStatus(404)
   }))
 
-router.post('/register',
+router.post('/user/register',
   validate(googleTokenBodyValidator()),
   parseGoogleToken(),
   asyncCatch<GoogleTokenBody>(async (req, res) => {
@@ -32,5 +36,29 @@ router.post('/register',
       res.status(200).send(newUser)
     }
   }))
+
+router.route('/user/preferences')
+  .all(authValidation())
+  .get(asyncCatch(async (req, res) => {
+    const userGoogleId = req.user!.sub
+    const user = await UserService.getByGoogleId(userGoogleId)
+    if (user) {
+      const { darkTheme } = user
+      res.status(200).send({ darkTheme })
+    } else
+      res.sendStatus(404)
+  }))
+  .patch(
+    validate(userPreferencesBodyValidator()),
+    asyncCatch(async (req, res) => {
+      const userGoogleId = req.user!.sub
+      const user = await UserService.updatePreferences(userGoogleId, req.body)
+      if (user) {
+        const { darkTheme } = user
+        res.status(200).send({ darkTheme })
+      } else
+        res.sendStatus(404)
+    }))
+
 
 export default router

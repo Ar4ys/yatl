@@ -11,15 +11,17 @@ const { Model, DataTypes } = Sq
 export interface UserAttributes {
   id: number
   googleId: string
+  darkTheme: boolean
 }
 
 export interface UserCreationAttributes
-  extends Optional<UserAttributes, "id"> {}
+  extends Optional<UserAttributes, "id" | "darkTheme"> {}
 
 export class User extends Model<UserAttributes, UserCreationAttributes>
   implements UserAttributes {
   id!: number
   googleId!: string
+  darkTheme!: boolean
 
   readonly createdAt!: Date
   readonly updatedAt!: Date
@@ -45,6 +47,11 @@ export const UserFactory: ModelFactory<User> = (sequelize) =>
       type: DataTypes.STRING,
       allowNull: false,
       unique: true
+    },
+    darkTheme: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false
     }
   }, { sequelize }) as unknown as ModelStatic<User>
 // Need to do this convertion ^ because sequelize type is incorrect.
