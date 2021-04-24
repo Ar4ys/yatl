@@ -2,7 +2,7 @@ import { KeyboardEventHandler, useState, VFC } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { faMoon, faSun } from "@fortawesome/free-solid-svg-icons"
 import { createTodo } from "../store/thunks/todos"
-import { toggleDarkTheme } from "../store/slices/darkTheme"
+import { toggleDarkTheme } from "../store/thunks/preferences"
 import { Item } from "./Item"
 import * as Button from "./IconButtons"
 import { ColorPicker } from "./ColorPicker"
@@ -26,7 +26,7 @@ export const TodoForm: VFC = () => {
     isSettingMenuOpened,
     setSettingMenuState
   ] = useState(false)
-  const darkTheme = useSelector(state => state.darkTheme)
+  const darkTheme = useSelector(state => state.preferences.darkTheme)
   const user = useSelector(state => state.user)
   const dispatch = useDispatch()
 

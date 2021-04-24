@@ -4,6 +4,7 @@ import { useGoogleLogin } from 'react-google-login'
 import { useDispatch } from 'react-redux'
 import { googleClientId } from '../constants'
 import { mergeLocalAndServerTodos } from "../store/thunks/todos"
+import { getPreferences } from "../store/thunks/preferences"
 import { login } from '../store/thunks/user'
 import { TodoForm } from "./TodoForm"
 import { TodoItem } from "./TodoItem"
@@ -14,7 +15,7 @@ import "../styles/Colors.css"
 export function App() {
   const dispatch = useDispatch()
   const todos = useSelector(state => state.todos)
-  const darkTheme = useSelector(state => state.darkTheme)
+  const darkTheme = useSelector(state => state.preferences.darkTheme)
   const userId = useSelector(state => state.user.tokenId)
   const className = darkTheme ? "dark-theme" : ""
   const { loaded } = useGoogleLogin({
@@ -23,10 +24,11 @@ export function App() {
     isSignedIn: true,
   })
 
-  // Merge todos on login
+  // Merge todos and set preferences on login
   useEffect(() => {
-    if (userId)
-      dispatch(mergeLocalAndServerTodos())
+    if (!userId) return
+    dispatch(mergeLocalAndServerTodos())
+    dispatch(getPreferences())
   }, [ userId, dispatch ])
 
   return <>

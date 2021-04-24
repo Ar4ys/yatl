@@ -7,6 +7,9 @@ import {
   logout as logoutAction
 } from "../slices/user"
 import { deleteAllTodos as deleteAllTodosAction } from "../slices/todos"
+import {
+  setPreferencesToDefault as setPreferencesToDefaultAction
+} from "../slices/preferences"
 import { RootState } from "../slices"
 
 interface Options {
@@ -14,7 +17,7 @@ interface Options {
 }
 
 const kyUser = ky.extend({
-  prefixUrl: '/'
+  prefixUrl: '/user'
 })
 
 export type GLoginResponse = GoogleLoginResponse | GoogleLoginResponseOffline
@@ -72,4 +75,5 @@ export const logout: AsyncThunk<void, undefined, Options> =
     async (_, { dispatch }) => {
       dispatch(logoutAction())
       dispatch(deleteAllTodosAction())
+      dispatch(setPreferencesToDefaultAction())
     })
