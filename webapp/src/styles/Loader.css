@@ -1,49 +1,64 @@
-/* Credit: https://dribbble.com/shots/5092176-Newton-Loader */
-
 .loader {
-  width: 142px;
-  height: 40px;
-  margin: -20px 0 0 -71px;
-  background: #fff;
-  filter: contrast(20);
-}
-.loader .dot {
-  position: absolute;
-  width: 16px;
-  height: 16px;
-  top: 12px;
-  left: 15px;
-  filter: blur(4px);
-  background: #000;
-  border-radius: 50%;
-  transform: translateX(0);
-  animation: dot 2.8s infinite;
-}
-.loader .dots {
-  transform: translateX(0);
-  margin-top: 12px;
-  margin-left: 31px;
-  animation: dots 2.8s infinite;
-}
-.loader .dots span {
-  display: block;
-  float: left;
-  width: 16px;
-  height: 16px;
-  margin-left: 16px;
-  filter: blur(4px);
-  background: #000;
-  border-radius: 50%;
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%, -200%); 
 }
 
-@keyframes dot {
-  50% {
-    transform: translateX(96px);
+.circle {
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  animation: loading 1.5s cubic-bezier(.8, .5, .2, 1.4) infinite;
+  transform-origin: bottom center;
+  position: relative;
+}
+
+.circle {
+  --bg-color: #20212488;
+}
+
+.dark-theme .circle {
+  --bg-color: #e8eaed88;
+}
+
+@keyframes loading {
+  0%{
+    transform: translateY(0px);
+    background-color: initial;
+  }
+  50%{
+    transform: translateY(50px);
+    background-color: var(--bg-color);
+  }
+  100%{
+    transform: translateY(0px);
+    background-color: initial;
   }
 }
 
-@keyframes dots {
-  50% {
-    transform: translateX(-31px);
-  }
+.circle-1{
+  animation-delay: 0.1s;
+}
+.circle-2{
+  animation-delay: 0.2s;
+}
+.circle-3{
+  animation-delay: 0.3s;
+}
+.circle-4{
+  animation-delay: 0.4s;
+}
+.circle-5{
+  animation-delay: 0.5s;
+}
+.circle-6{
+  animation-delay: 0.6s;
+}
+.circle-7{
+  animation-delay: 0.7s;
+}
+.circle-8{
+  animation-delay: 0.8s;
 }
