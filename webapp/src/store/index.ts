@@ -1,7 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit"
 import reducer, { RootState } from "./slices"
 import { saveStore } from "./localStorage";
-import { mergeLocalAndServerTodos } from "./thunks/todos";
 import 'react-redux';
 
 const store = configureStore({
@@ -14,7 +13,6 @@ declare module 'react-redux' {
 } 
 
 store.subscribe(() => saveStore(store))
-store.dispatch(mergeLocalAndServerTodos())
 
 export default store
 export type { RootState }

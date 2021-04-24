@@ -2,7 +2,7 @@ import { useRef, useEffect, VFC, FormEventHandler } from "react"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faCheck } from "@fortawesome/free-solid-svg-icons"
 import "../styles/ColorPicker.css"
-import { Color } from "../enums"
+import { Color } from "../constants"
 
 type FormChangeHandler = FormEventHandler<HTMLFormElement>
 

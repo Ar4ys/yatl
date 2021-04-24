@@ -1,54 +1,72 @@
 import { AsyncThunk, createAsyncThunk, unwrapResult } from '@reduxjs/toolkit'
+import { Options, createAuthThunkGuard } from '../../utils'
+import { v4 as makeUUID } from 'uuid'
 import ky from 'ky'
-import { RootState } from '../slices'
+
 import {
-  Todo, TodoCreate, TodoUpdate,
+  Todo, TodoAdd, TodoUpdate,
   addTodo as addTodoAction,
   updateTodo as updateTodoAction,
   deleteTodo as deleteTodoAction,
   TodoDelete
 } from '../slices/todos'
 
-interface Options {
-  state: RootState
+interface TodoCreateThunk extends Omit<TodoAdd, 'uuid'> {
+  serverOnly?: boolean
 }
 
 const kyTask = ky.extend({
   prefixUrl: '/task'
 })
 
+const authGuard = createAuthThunkGuard(kyTask)
+
 export const getAllTodos: AsyncThunk<Todo[], void, Options> =
   createAsyncThunk(
     'todos/getAllTodosStatus',
-    async () =>
-      await kyTask.get('').json<Todo[]>())
+    async (_, { getState }) => {
+      const { ky } = authGuard(getState())
+      return await ky.get('').json<Todo[]>()
+    })
 
 export const getTodoById: AsyncThunk<Todo, number, Options> =
   createAsyncThunk(
     'todos/getTodoByIdStatus',
-    async id =>
-      await kyTask.get(`${id}`).json<Todo>())
+    async (id, { getState }) => {
+      const { ky } = authGuard(getState())
+      return await ky.get(`${id}`).json<Todo>()
+    })
 
-export const createTodo: AsyncThunk<Todo, TodoCreate, Options> =
+export const createTodo: AsyncThunk<Todo, TodoCreateThunk, Options> =
   createAsyncThunk(
     'todos/createTodoStatus',
-    async todo =>
-      await kyTask.post('', { json: todo }).json<Todo>())
+    async (todo, { dispatch, getState }) => {
+      const { serverOnly } = todo
+      delete todo.serverOnly
+      
+      const payload = { uuid: makeUUID(), ...todo }
+      !serverOnly && dispatch(addTodoAction(payload))
+      const { ky } = authGuard(getState())
+      
+      return await ky.post('', { json: payload }).json<Todo>()
+    })
 
 export const updateTodo: AsyncThunk<Todo, TodoUpdate, Options> =
   createAsyncThunk(
     'todos/updateTodoStatus',
-    async ({ uuid, todo }, { dispatch }) => {
+    async ({ uuid, todo }, { dispatch, getState }) => {
       dispatch(updateTodoAction({ uuid, todo }))
-      return await kyTask.patch(`${uuid}`, { json: todo }).json<Todo>()
+      const { ky } = authGuard(getState())
+      return await ky.patch(`${uuid}`, { json: todo }).json<Todo>()
     })
 
 export const deleteTodo: AsyncThunk<TodoDelete, TodoDelete, Options> =
   createAsyncThunk(
     'todos/deleteTodoStatus',
-    async (uuid, { dispatch }) => {
+    async (uuid, { dispatch, getState }) => {
       dispatch(deleteTodoAction(uuid))
-      return await kyTask.delete(`${uuid}`) && uuid
+      const { ky } = authGuard(getState())
+      return await ky.delete(`${uuid}`) && uuid
     })
 
 export const mergeLocalAndServerTodos: AsyncThunk<void, void, Options> =
@@ -65,7 +83,7 @@ export const mergeLocalAndServerTodos: AsyncThunk<void, void, Options> =
         const serverTodoUpdatedAt = new Date(serverTodo?.updatedAt ?? 0)
 
         if (!serverTodo) {
-          dispatch(createTodo(localTodo))
+          dispatch(createTodo({ serverOnly: true, ...localTodo }))
         } else if (localTodoUpdatedAt < serverTodoUpdatedAt) {
           serverTodos = serverTodos.filter(todo => todo.uuid !== uuid)
           dispatch(updateTodoAction({

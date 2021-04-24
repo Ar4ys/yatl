@@ -1,7 +1,6 @@
 import { KeyboardEventHandler, useState, VFC } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { faMoon, faSun } from "@fortawesome/free-solid-svg-icons"
-import { faGoogle } from "@fortawesome/free-brands-svg-icons"
 import { createTodo } from "../store/thunks/todos"
 import { toggleDarkTheme } from "../store/slices/darkTheme"
 import { Item } from "./Item"
@@ -9,7 +8,9 @@ import * as Button from "./IconButtons"
 import { ColorPicker } from "./ColorPicker"
 import { SettingsMenu } from "./SettingsMenu"
 import { SettingsItem } from "./SettingsItem"
-import { Color } from "../enums"
+import { LoginSettingsItem } from "./LoginSettingsItem"
+import { LogoutSettingsItem } from "./LogoutSettingsItem"
+import { Color } from "../constants"
 import "../styles/TodoItem.css"
 
 type InputKeyboardHandler = KeyboardEventHandler<HTMLInputElement>
@@ -26,6 +27,7 @@ export const TodoForm: VFC = () => {
     setSettingMenuState
   ] = useState(false)
   const darkTheme = useSelector(state => state.darkTheme)
+  const user = useSelector(state => state.user)
   const dispatch = useDispatch()
 
   const addTodo = () => {
@@ -70,10 +72,9 @@ export const TodoForm: VFC = () => {
                 icon={faMoon}
                 onClick={() => dispatch(toggleDarkTheme(true))}
               />}
-          <SettingsItem
-            label="Login"
-            icon={faGoogle}
-            onClick={() => alert("login")} />
+          {user.tokenId
+            ? <LogoutSettingsItem />
+            : <LoginSettingsItem />}
         </SettingsMenu>
       }
     </Item>

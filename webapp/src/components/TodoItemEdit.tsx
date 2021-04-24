@@ -2,7 +2,7 @@ import { KeyboardEventHandler, useState, VFC } from "react"
 import { Item } from "./Item"
 import * as Button from "./IconButtons"
 import { ColorPicker } from "./ColorPicker"
-import { Color } from "../enums"
+import { Color } from "../constants"
 import { Todo } from "../store/slices/todos"
 
 type TodoUpdate = Pick<Todo, 'content' | 'color'>

@@ -4,7 +4,7 @@ import type { Todo } from "../store/slices/todos"
 import { updateTodo as updateTodoAction, deleteTodo } from "../store/thunks/todos"
 import { TodoItemView } from "./TodoItemView"
 import { TodoItemEdit } from "./TodoItemEdit"
-import { Color } from "../enums"
+import { Color } from "../constants"
 
 export interface TodoItemProps {
   uuid: string
