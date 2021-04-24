@@ -1,0 +1,24 @@
+.settings-item {
+  border-bottom: 1px solid #0008;
+}
+
+.dark-theme .settings-item {
+  border-bottom: 1px solid #fff8;
+}
+
+.settings-item:last-child {
+  border-bottom: 0;
+}
+
+.settings-item > p {
+  display: inline-block;
+  margin: 5px 0;
+  margin-left: 5px;
+}
+
+.settings-item:hover {
+  cursor: pointer;
+}
+
+.dark-theme .settings-item:hover {
+}

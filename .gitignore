@@ -18,3 +18,4 @@ pnpm-lock.yaml
 *.sublime-workspace
 
 *.sqlite
+.env

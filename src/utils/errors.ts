@@ -7,40 +7,11 @@ export class BaseError extends Error {
   }
 }
 
-export interface HTTPErrorOptions {
-  status?: number
-  shouldRender?: boolean
-  method?: string
-  path?: string
-}
-
-export class HTTPError extends BaseError {
-  public status: number
-  public shouldRender: boolean
-  public method?: string
-  public path?: string
-
-  constructor(message?: string, options: HTTPErrorOptions = {}) {
-    super(message)
-
-    const { status, shouldRender, method, path } = options
-    this.status = status ?? 500
-    this.shouldRender = shouldRender ?? false
-    this.method = method
-    this.path = path
-  }
-}
-
-export class RouteError extends HTTPError {
+export class ErrorWraper extends BaseError {
   public cause: Error
 
-  constructor(request: Request, cause: Error) {
-    super(`[${request.method}] ${request.path}`, {
-      status: 500,
-      method: request.method,
-      path: request.path
-    })
-
+  constructor(message: string, cause: Error) {
+    super(message)
     this.cause = cause
     // TODO: Find a better way to generate stack trace
     this.stack = `${this.name}: ${this.message}\n  Cause: ${cause.stack}`
@@ -48,5 +19,35 @@ export class RouteError extends HTTPError {
 
   toString() {
     return `${this.name}: ${this.message}\n  Cause: ${this.cause}`
+  }
+}
+
+// export interface HTTPErrorOptions {
+//   status?: number
+//   shouldRender?: boolean
+//   method?: string
+//   path?: string
+// }
+
+// export class HTTPError extends BaseError {
+//   public status: number
+//   public shouldRender: boolean
+//   public method?: string
+//   public path?: string
+
+//   constructor(message?: string, options: HTTPErrorOptions = {}) {
+//     super(message)
+
+//     const { status, shouldRender, method, path } = options
+//     this.status = status ?? 500
+//     this.shouldRender = shouldRender ?? false
+//     this.method = method
+//     this.path = path
+//   }
+// }
+
+export class RouteError extends ErrorWraper {
+  constructor(request: Request, cause: Error) {
+    super(`[${request.method}] ${request.path}`, cause)
   }
 }

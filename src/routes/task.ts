@@ -1,33 +1,50 @@
 import { Router } from 'express'
-import catchAsync from '../utils/asyncErrorHandler.js'
-import TaskService from '../services/task.js'
-import validate from '../utils/validate.js'
+import Sq from 'sequelize'
+import catchAsync from '../middlewares/asyncErrorHandler.js'
+import validate from '../middlewares/validate.js'
+import { authValidation } from '../middlewares/auth.js'
+import TaskService from '../services/Task.js'
+import { Task, TaskCreationAttributes } from '../models/Task.js'
 import {
-  taskIdParamValidator,
+  taskUUIDParamValidator,
   taskCreationBodyValidator,
   taskUpdateBodyValidator
 } from '../validation/task.js'
 
+const { UniqueConstraintError } = Sq
 const router = Router()
 
 router.route('/task')
-  .get(catchAsync(async (_req, res) => {
-    const allTasks = await TaskService.getAll()
+  .all(authValidation())
+  .get(catchAsync(async (req, res) => {
+    const userGoogleId = req.user!.sub
+    const allTasks = await TaskService.getAll(userGoogleId)
     res.status(200).send(allTasks)
   }))
   .post(
     validate(taskCreationBodyValidator()),
-    catchAsync(async (req, res) => {
-      const taskFields = req.body
-      const taskId = await TaskService.create(taskFields)
-      res.status(201).send({ id: taskId })
+    catchAsync<TaskCreationAttributes>(async (req, res) => {
+      const userGoogleId = req.user!.sub
+      try {
+        const task = await TaskService.create(userGoogleId, req.body)
+        res.status(201).send(task)
+      } catch (e) {
+        if (e instanceof UniqueConstraintError)
+          res.status(400).send({
+            msg: 'UUID must be unique',
+            param: 'uuid',
+            location: 'body'
+          })
+        else throw e
+      }
     }))
 
-router.route('/task/:id')
-  .all(validate(taskIdParamValidator()))
-  .get(catchAsync(async (req, res) => {
-    const id = +req.params.id
-    const task = await TaskService.get(id)
+router.route('/task/:uuid')
+  .all(validate(taskUUIDParamValidator()), authValidation())
+  .get(catchAsync<void, "uuid">(async (req, res) => {
+    const userGoogleId = req.user!.sub
+    const { uuid } = req.params
+    const task = await TaskService.get(userGoogleId, uuid)
     if (task)
       res.status(200).send(task)
     else
@@ -35,22 +52,24 @@ router.route('/task/:id')
   }))
   .patch(
     validate(taskUpdateBodyValidator()),
-    catchAsync(async (req, res) => {
-      const id = +req.params.id
+    catchAsync<Partial<Task>, "uuid">(async (req, res) => {
+      const userGoogleId = req.user!.sub
+      const { uuid } = req.params
       const fields = req.body
-      const [ amount ] = await TaskService.update(id, fields)
-      if (amount === 0)
-        res.sendStatus(404)
+      const updatedTask = await TaskService.update(userGoogleId, uuid, fields)
+      if (updatedTask)
+        res.status(200).send(updatedTask)
       else
-        res.status(200).send(await TaskService.get(id))
+        res.sendStatus(404)
     }))
-  .delete(catchAsync(async (req, res) => {
-    const id = +req.params.id
-    const amount = await TaskService.delete(id)
-    if (amount === 0)
-      res.sendStatus(404)
-    else
+  .delete(catchAsync<void, "uuid">(async (req, res) => {
+    const userGoogleId = req.user!.sub
+    const { uuid } = req.params
+    const isDeleted = await TaskService.delete(userGoogleId, uuid)
+    if (isDeleted)
       res.sendStatus(204)
+    else
+      res.sendStatus(404)
   }))
 
 export default router

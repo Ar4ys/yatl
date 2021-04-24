@@ -1,0 +1,28 @@
+.icon-button {
+	position: relative;
+	border: none;
+	background: none;
+	padding: 0;
+	margin: 10px;
+	color: inherit;
+}
+
+.icon-button:focus,
+.icon-button:active,
+.icon-button::-moz-focus-inner {
+	outline-color: rgba(0, 0, 0, 0);
+	border: none;
+}
+
+.icon-button {
+	opacity: .5;
+}
+
+.icon-button:hover {
+	opacity: 1;
+	cursor: pointer;
+}
+
+.icon-button:active {
+	opacity: .5;
+}
